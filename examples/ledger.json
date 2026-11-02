@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "id": "R1",
+      "state": "active",
+      "trigger": "a synthetic example contains a date",
+      "action": "check the date before presenting it",
+      "scope": "synthetic examples",
+      "admission": {"own_mistake": true, "recurring": true, "preventable": true, "covered_by_rule": false},
+      "evidence": [
+        {"session": "example-1", "date": "2026-01-01", "source": "synthetic record A", "quote": "date was unchecked", "excerpt": "The synthetic date was unchecked."},
+        {"session": "example-2", "date": "2026-01-02", "source": "synthetic record B", "quote": "date was unchecked", "excerpt": "Another synthetic date was unchecked."}
+      ],
+      "approval": {"decision": "approve", "by": "example reviewer", "date": "2026-01-03"}
+    },
+    {
+      "id": "C1",
+      "state": "candidate",
+      "trigger": "a synthetic source is cited",
+      "action": "check its title",
+      "scope": "synthetic examples",
+      "admission": {"own_mistake": true, "recurring": true, "preventable": true, "covered_by_rule": false},
+      "evidence": [
+        {"session": "example-3", "date": "2026-01-04", "source": "synthetic record C", "quote": "title was unchecked", "excerpt": "The synthetic title was unchecked."}
+      ]
+    }
+  ]
+}
