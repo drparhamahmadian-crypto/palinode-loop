@@ -1,12 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="title desc">
-<title id="title">Palinode Loop architecture</title><desc id="desc">A human-governed six-stage cycle from observing a mistake to feedback, with a human approval boundary and a hold branch before an active rule.</desc>
-<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#21645b"/></marker></defs>
-<rect width="960" height="600" rx="12" fill="#ebe5d9"/>
-<g fill="none" stroke="#21645b" stroke-width="2" marker-end="url(#arrow)"><path d="M250 154L355 114"/><path d="M604 114L710 154"/><path d="M810 194V389"/><path d="M710 446L605 486"/><path d="M355 486L250 446"/><path d="M150 389V194"/></g>
-<g font-family="Arial,sans-serif" fill="#192e35" text-anchor="middle"><text x="480" y="279" font-size="29" font-family="Georgia,serif">Evidence is not authority.</text><text x="480" y="310" font-size="15">A person decides whether guidance is adopted.</text></g>
-<g fill="#f9f6ef" stroke="#192e35" stroke-width="1.5"><rect x="45" y="113" width="210" height="80" rx="6"/><rect x="355" y="63" width="250" height="80" rx="6"/><rect x="705" y="113" width="210" height="80" rx="6"/><rect x="705" y="389" width="210" height="105" rx="6" stroke="#a03e23" stroke-width="3"/><rect x="355" y="457" width="250" height="80" rx="6"/><rect x="45" y="407" width="210" height="80" rx="6"/></g>
-<g fill="#192e35" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" font-weight="bold"><text x="150" y="159">1  Observe</text><text x="480" y="109">2  Admit</text><text x="810" y="159">3  Candidate</text><text x="810" y="437">4  Human decides</text><text x="480" y="503">5  Active rule</text><text x="150" y="453">6  Feedback</text></g>
-<text x="810" y="466" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" fill="#a03e23">APPROVAL BOUNDARY</text>
-<path d="M810 494V529" fill="none" stroke="#a03e23" stroke-width="2" stroke-dasharray="5 4"/><circle cx="810" cy="529" r="4" fill="#a03e23"/><text x="810" y="550" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" fill="#a03e23">Held candidate · no active rule</text>
-<text x="480" y="567" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" fill="#192e35">People record and revise entries; the checker validates and renders them.</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 342" role="img" aria-labelledby="title desc">
+  <title id="title">Palinode Loop architecture</title>
+  <desc id="desc">Six stages: incident, admission, candidate, human decision, bounded active rule, and violation feedback. A hold branch ends outside active guidance. People record decisions; the checker validates and renders them.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#7ee7c1"/></marker>
+  </defs>
+  <rect width="900" height="342" rx="10" fill="#161b22"/>
+  <g fill="none" stroke="#7ee7c1" stroke-width="2" marker-end="url(#arrow)">
+    <path id="path-1" d="M270 65H326"/><path id="path-2" d="M572 65H628"/>
+    <path id="path-3" d="M751 105V179"/><path id="path-4" d="M628 220H572"/>
+    <path id="path-5" d="M326 220H270"/><path id="path-return" d="M147 179V105"/>
+  </g>
+  <g fill="none" stroke="#ffa28b" stroke-width="2" stroke-dasharray="5 4"><path id="path-hold" d="M751 260V300"/><circle cx="751" cy="300" r="3" fill="#ffa28b"/></g>
+  <g font-family="system-ui, -apple-system, sans-serif" fill="#e6edf3">
+    <g class="node" data-node="0"><rect x="24" y="24" width="246" height="81" rx="7" fill="#21262d" stroke="#6e7d8a"/><text x="42" y="54" font-size="18" font-weight="700">1  Observe incident</text><text x="42" y="82" font-family="monospace" font-size="13" fill="#b8c5ce">evidence()</text></g>
+    <g class="node" data-node="1"><rect x="326" y="24" width="246" height="81" rx="7" fill="#21262d" stroke="#6e7d8a"/><text x="344" y="54" font-size="18" font-weight="700">2  Admit evidence</text><text x="344" y="82" font-family="monospace" font-size="13" fill="#b8c5ce">validate()</text></g>
+    <g class="node" data-node="2"><rect x="628" y="24" width="246" height="81" rx="7" fill="#21262d" stroke="#6e7d8a"/><text x="646" y="54" font-size="18" font-weight="700">3  Retain candidate</text><text x="646" y="82" font-family="monospace" font-size="13" fill="#b8c5ce">state: candidate</text></g>
+    <g class="node gate" data-node="3"><rect x="628" y="179" width="246" height="81" rx="7" fill="#2b2427" stroke="#ffa28b" stroke-width="2"/><text x="646" y="207" font-size="18" font-weight="700">4  Human decides</text><text x="646" y="234" font-family="monospace" font-size="13" fill="#ffd0c3">approval.decision</text></g>
+    <g class="node" data-node="4"><rect x="326" y="179" width="246" height="81" rx="7" fill="#21262d" stroke="#6e7d8a"/><text x="344" y="207" font-size="18" font-weight="700">5  Bounded active rule</text><text x="344" y="234" font-family="monospace" font-size="13" fill="#b8c5ce">main(): render</text></g>
+    <g class="node" data-node="5"><rect x="24" y="179" width="246" height="81" rx="7" fill="#21262d" stroke="#6e7d8a"/><text x="42" y="207" font-size="18" font-weight="700">6  Violation feedback</text><text x="42" y="234" font-family="monospace" font-size="13" fill="#b8c5ce">violations[]</text></g>
+    <text x="751" y="323" text-anchor="middle" font-size="14" fill="#ffa28b">Held candidate · no active rule</text>
+    <text x="42" y="310" font-size="13" fill="#b8c5ce">Evidence stays inspectable.</text><text x="42" y="329" font-size="13" fill="#b8c5ce">Approved rules stay revisable.</text>
+  </g>
 </svg>

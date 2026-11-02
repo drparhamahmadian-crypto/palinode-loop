@@ -4,32 +4,36 @@
 
 ## Platform
 
-Web explainer and a local Python command-line reference implementation.
+GitHub-ready open-source repository with a standalone dark HTML/SVG explainer and a local Python command-line reference implementation.
 
 ## Stack
 
-Standalone interactive HTML with authored SVG; Python 3.10+ standard library. No runtime services or third-party Python dependencies. This carries forward the requested HTML/SVG format.
+Standalone HTML with authored SVG and local static assets; Python 3.10+ standard library. No runtime service, network dependency, or third-party Python package.
 
 ## Users
 
-Developers inspecting or adopting an agent feedback workflow, and reviewers assessing a concrete open-source contribution.
+Developers and researchers inspecting agent-memory and feedback designs, and maintainers reviewing a small, reproducible implementation.
 
 ## Product Purpose
 
-Make recurring agent failures actionable through evidence-bearing candidates, human-approved conditional rules and visible feedback when rules fail again.
+Make documented agent failures actionable through an explicit lifecycle: evidence-bearing candidate, human policy decision, active scoped rule, and visible feedback when that rule fails again. The architectural contribution is this governed evidence-to-intervention path.
 
 ## Capabilities and Constraints
 
-The reference implementation checks a local ledger and renders active approved rules. It does not change agent settings, authenticate reviewers, fetch sources, run an LLM or enforce agent behaviour. The surrounding workflow includes human judgement and host integration. Published research supplies evidence for related mechanisms; its benchmark results are attributed to the studied systems. No new efficacy experiment is required for this release.
+The CLI validates a local version 1 ledger and renders active rules for human review. It does not capture conversations, authenticate approvals, fetch sources, run a model, change ledger states, or enforce guidance in a host. The interactive SVG walkthrough moves a synthetic evidence packet through the lifecycle and shows the hold/approval boundary without changing the CLI ledger.
+
+The repository documents published results for related mechanisms with the studied systems and task conditions clearly attributed. Do not transfer those results to Palinode Loop or report a measured Palinode effectiveness gain. No new efficacy experiment is required for this release.
+
+Use precise domain language, concise explanatory copy, and code examples that experts can inspect and reproduce. The architecture should remain understandable without the animation.
 
 ## Brand Commitments
 
-Working identity: Palinode Loop. Technical, exciting, philosophically grounded and comprehensible. Carry forward the portfolio's editorial paper, dark ink and terracotta visual language. The name and licence remain reviewable before public release.
+Working identity: Palinode Loop. Preserve the philosophical idea of revision and corrigibility. Use a dark, high-contrast GitHub-oriented presentation with a compact type hierarchy, restrained accents, and an inspectable SVG architecture. Reduce controls to the essential walkthrough actions; make code and schema examples visually clear.
 
 ## Privacy
 
-Public content uses synthetic examples. Do not copy private records, source transcripts, personal paths, private repository history or account configuration. Static assets are local; there is no analytics or data submission.
+Use synthetic fixtures only. Do not include private source history, personal paths, account configuration, credentials, patient information, or real conversation records. The explainer uses local assets and sends no analytics or data.
 
 ## Accessibility
 
-Keyboard controls, readable SVG alternatives, mobile reflow, visible focus and reduced-motion support. Animation is opt-in.
+Keep SVG labels readable and provide a static diagram; support keyboard navigation, visible focus, reduced motion, narrow-screen reflow, and horizontal diagram scrolling within a bounded region.

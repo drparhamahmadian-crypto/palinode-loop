@@ -37,9 +37,15 @@ def fields(obj, required, optional, path):
 
 
 def string(value, path):
-    if (not isinstance(value, str) or not value.strip()
-            or any(unicodedata.category(c) in {"Cc", "Cf", "Cs", "Zl", "Zp"} for c in value)):
-        fail(path, "expected nonempty string without control characters")
+    if (
+        not isinstance(value, str)
+        or not value.strip()
+        or any(
+            unicodedata.category(c) in {"Cc", "Cf", "Cs", "Zl", "Zp"}
+            for c in value
+        )
+    ):
+        fail(path, "expected nonempty single-line text without prohibited characters")
 
 
 def date(value, path):
@@ -53,6 +59,7 @@ def date(value, path):
 
 
 def evidence(items, path):
+    """Check supplied excerpts and return distinct declared session labels."""
     if not isinstance(items, list):
         fail(path, "expected list")
     sessions = set()
@@ -69,6 +76,7 @@ def evidence(items, path):
 
 
 def validate(data):
+    """Return (entry, eligible, review_required, rule) tuples after policy checks."""
     fields(data, {"schema_version", "entries"}, set(), "ledger")
     if type(data["schema_version"]) is not int or data["schema_version"] != 1:
         fail("ledger.schema_version", "expected integer 1")
@@ -77,8 +85,12 @@ def validate(data):
     seen, results = set(), []
     for i, entry in enumerate(data["entries"]):
         p = f"ledger.entries[{i}]"
-        fields(entry, {"id", "state", "trigger", "action", "scope", "evidence", "admission"},
-               {"approval", "violations"}, p)
+        fields(
+            entry,
+            {"id", "state", "trigger", "action", "scope", "evidence", "admission"},
+            {"approval", "violations"},
+            p,
+        )
         for key in ("id", "state", "trigger", "action", "scope"):
             string(entry[key], f"{p}.{key}")
         if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_-]{0,63}", entry["id"]):
@@ -96,7 +108,14 @@ def validate(data):
         for key in keys:
             if type(admission[key]) is not bool:
                 fail(f"{p}.admission.{key}", "expected boolean")
-        eligible = bool(sessions) and all(admission[k] for k in ("own_mistake", "recurring", "preventable")) and not admission["covered_by_rule"]
+        eligible = (
+            bool(sessions)
+            and all(
+                admission[key]
+                for key in ("own_mistake", "recurring", "preventable")
+            )
+            and not admission["covered_by_rule"]
+        )
         approved = False
         if "approval" in entry:
             approval = entry["approval"]
@@ -125,8 +144,11 @@ def load(path):
             raw = f.read(MAX_BYTES + 1)
         if len(raw) > MAX_BYTES:
             fail("file", "exceeds 1 MiB")
-        data = json.loads(raw.decode("utf-8"), object_pairs_hook=pairs,
-                          parse_constant=lambda _: fail("JSON", "nonfinite number"))
+        data = json.loads(
+            raw.decode("utf-8"),
+            object_pairs_hook=pairs,
+            parse_constant=lambda _: fail("JSON", "nonfinite number"),
+        )
     except Invalid:
         raise
     except (OSError, UnicodeError, ValueError, RecursionError):
@@ -145,7 +167,11 @@ def main(argv):
                 print(f"{rule} [Scope: {entry['scope']}]")
             elif argv[1] == "check":
                 status = "eligible" if eligible else "ineligible"
-                suffix = "; review enforcement recommended" if entry["state"] == "active" and review else ""
+                suffix = (
+                    "; review enforcement recommended"
+                    if entry["state"] == "active" and review
+                    else ""
+                )
                 print(f"Entry {entry['id']}: {entry['state']}; {status}{suffix}")
         return 0
     except Invalid as exc:

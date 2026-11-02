@@ -1,50 +1,459 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-AU">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; font-src 'self'; connect-src 'none'; img-src 'self'; base-uri 'none'; form-action 'none'">
-<title>Palinode Loop — A mistake can become a method</title>
-<style>
-@font-face{font-family:Fraunces;src:url('assets/fraunces.ttf') format('truetype');font-display:swap}
-:root{color-scheme:light;--paper:#f4f0e7;--ink:#192e35;--rust:#a03e23;--teal:#21645b;--line:#9baba2;--wash:#ebe5d9}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.6 system-ui,-apple-system,sans-serif}::selection{background:#b9d9ce;color:var(--ink)}a{color:var(--teal);text-underline-offset:.22em;text-decoration-thickness:1px}a:hover{color:var(--rust)}:focus-visible{outline:3px solid var(--rust);outline-offset:4px}button{font:inherit;cursor:pointer}button:focus-visible{outline:3px solid var(--rust);outline-offset:3px}button:disabled{opacity:.48;cursor:not-allowed}.wrap{width:min(1320px,calc(100% - 80px));margin:auto}.mast{display:flex;justify-content:space-between;align-items:center;padding:25px 0;border-bottom:1px solid var(--ink)}.brand{font:600 1.45rem Fraunces,Georgia,serif;letter-spacing:-.025em;color:var(--ink);text-decoration:none}.mast nav{display:flex;gap:26px;font-size:.86rem}.hero{padding:82px 0 74px;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(35px,6vw,90px);align-items:start}.hero-copy,.diagram-shell{min-width:0}.hero-copy{padding-top:10px}.hero h1{font:500 clamp(3.1rem,6.7vw,6rem)/.99 Fraunces,Georgia,serif;letter-spacing:-.04em;text-wrap:balance;margin:0 0 32px}.hero h1 em{color:var(--rust);font-style:normal}.lead{font-size:clamp(1.08rem,1.4vw,1.28rem);line-height:1.55;max-width:36ch}.hero-note{margin-top:40px;font-size:.89rem;max-width:45ch;color:#38554e}.diagram-shell{background:var(--wash);border:1px solid #c9c4b7;padding:18px}.diagram-drawing{overflow-x:auto;max-width:100%;min-width:0}.diagram-shell svg{display:block;width:100%;height:auto}.diagram-shell .node rect{fill:#f9f6ef;stroke:var(--ink);stroke-width:1.5;transition:fill .25s,stroke .25s,stroke-width .25s}.diagram-shell .node.active rect{fill:#d2e2d8;stroke:var(--teal);stroke-width:4}.diagram-shell .gate rect{stroke:var(--rust);stroke-width:3}.diagram-shell .gate.active rect{fill:#f2d8ca;stroke:var(--rust)}.diagram-shell .held rect{fill:#eee9df;stroke-dasharray:5 4;opacity:.55}.diagram-shell text{fill:var(--ink)}.diagram-shell .rust{fill:var(--rust)}.diagram-key{display:flex;justify-content:space-between;gap:16px;font-size:.78rem;padding:10px 5px 0}.diagram-key button{background:none;border:0;color:var(--teal);text-decoration:underline;text-underline-offset:3px;padding:0}.diagram-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:15px 5px 4px}.diagram-controls button{border:1px solid var(--teal);background:transparent;color:var(--ink);padding:6px 12px}.diagram-controls button:hover:not(:disabled){background:#d2e2d8}.diagram-controls output{font-size:.85rem;flex:1;min-width:130px}.tour{background:var(--ink);color:var(--paper);padding:70px 0 78px}.tour-grid{display:grid;grid-template-columns:1fr 1.25fr;gap:clamp(40px,7vw,100px)}h2{font:500 clamp(2.4rem,4.2vw,4rem)/1.05 Fraunces,Georgia,serif;letter-spacing:-.03em;text-wrap:balance;margin:0 0 23px}.tour-intro p{max-width:42ch;color:#d5e5dc}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#637a72;border:1px solid #637a72}.steps button{min-height:59px;text-align:left;background:var(--ink);color:#e4ece5;border:0;padding:12px 14px;font-size:.86rem}.steps button[aria-pressed=true]{background:#d5e5dc;color:var(--ink);font-weight:700}.tour-detail{min-height:152px;padding:28px 0 12px}.tour-detail h3{font:500 1.65rem Fraunces,Georgia,serif;margin:0 0 9px}.tour-detail p{margin:0;max-width:65ch;color:#dce8df}.tour-detail pre{margin:18px 0 0;padding:15px 18px;border:1px solid #637a72;background:#213c3e;color:#edf3eb;white-space:pre-wrap;overflow-wrap:anywhere;font-size:.8rem;line-height:1.55}.decision{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin:0 0 24px}.decision span{margin-right:6px;font-size:.86rem}.decision button,.controls button{border:1px solid #a8c1b5;background:transparent;color:var(--paper);padding:9px 15px}.decision button[aria-pressed=true]{background:#d5e5dc;color:var(--ink);border-color:#d5e5dc}.controls{display:flex;gap:9px;flex-wrap:wrap}.controls button:hover:not(:disabled),.decision button:hover{background:#36544d}.controls button[aria-pressed=true]{background:#d5e5dc;color:var(--ink)}.caption{font-size:.8rem;color:#c1d4c8}.section{padding:110px 0;border-bottom:1px solid #bcbfb3}.section-head{display:grid;grid-template-columns:1fr 1.4fr;gap:65px}.section-head>p{max-width:65ch;margin:0;font-size:1.17rem}.principles{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:70px}.principles article{border-top:2px solid var(--teal);padding-top:18px}.principles h3,.study h3{font:500 1.65rem/1.15 Fraunces,Georgia,serif;margin:0 0 12px}.principles p,.study p{margin:0;max-width:62ch}.evidence-layout{display:grid;grid-template-columns:.8fr 1.4fr;gap:80px}.studies{border-top:1px solid var(--ink)}.study{padding:28px 0;border-bottom:1px solid #b4bdb3}.study h3{margin-bottom:10px}.study p{font-size:.96rem}.study a{display:inline-block;margin-top:12px;font-size:.87rem}.code-layout{display:grid;grid-template-columns:1fr 1.2fr;gap:80px}.code-layout p{max-width:58ch}pre{background:var(--ink);color:#e6eee5;padding:28px;overflow:auto;font:0.86rem/1.9 ui-monospace,SFMono-Regular,monospace}code{font-family:ui-monospace,SFMono-Regular,monospace}.links{display:flex;flex-wrap:wrap;gap:12px 24px;font-size:.9rem}.closing{padding:100px 0}.closing p{max-width:68ch}.footer{display:flex;justify-content:space-between;gap:20px;border-top:1px solid var(--ink);padding:25px 0 40px;font-size:.8rem}.nojs{background:#fff9ed;color:var(--ink);padding:10px 14px}
-@media(max-width:900px){.wrap{width:min(100% - 40px,720px)}.hero,.tour-grid,.section-head,.evidence-layout,.code-layout{grid-template-columns:minmax(0,1fr);gap:40px}.hero{padding:58px 0}.hero h1{max-width:13ch}.hero-note{margin-top:24px}.section{padding:75px 0}.principles{gap:25px;margin-top:45px}.tour-detail{min-height:0}.mast nav{gap:16px}}
-@media(max-width:560px){.diagram-drawing svg{min-width:600px}body{font-size:16px}.wrap{width:calc(100% - 32px)}.mast{align-items:flex-start;gap:16px}.mast nav{font-size:.77rem;gap:10px;flex-wrap:wrap;justify-content:flex-end}.hero h1{font-size:clamp(3.2rem,13vw,4.5rem)}.diagram-shell{padding:7px}.diagram-key{font-size:.72rem}.steps{grid-template-columns:repeat(2,1fr)}.principles{grid-template-columns:1fr;gap:30px}.section-head,.evidence-layout,.code-layout{gap:25px}.footer{display:block}.footer span{display:block;margin-top:8px}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.diagram-shell .node rect{transition:none}}
-@media print{.mast nav,.controls,.decision,.steps,.diagram-key button{display:none}.hero,.tour-grid,.section-head,.evidence-layout,.code-layout{display:block}.hero,.section,.closing{padding:25px 0}.tour{background:white;color:var(--ink);padding:20px 0}.tour-intro p,.tour-detail p{color:var(--ink)}.diagram-shell{break-inside:avoid}.study{break-inside:avoid}a{color:var(--ink)}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; font-src 'self'; connect-src 'none'; img-src 'self'; base-uri 'none'; form-action 'none'">
+  <title>Palinode Loop — A mistake can become a method</title>
+  <style>
+    @font-face {
+      font-family: Fraunces;
+      src: url('assets/fraunces.ttf') format('truetype');
+      font-display: swap;
+    }
+    :root {
+      color-scheme: dark;
+      --page: #0d1117;
+      --surface: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #b8c5ce;
+      --teal: #7ee7c1;
+      --coral: #ffa28b;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--text);
+      font: 16px/1.65 system-ui, -apple-system, sans-serif;
+    }
+    ::selection { color: var(--page); background: var(--teal); }
+    a { color: var(--teal); text-underline-offset: .2em; }
+    a:hover { color: #c4ffeb; }
+    :focus-visible { outline: 3px solid var(--coral); outline-offset: 3px; }
+    button, select { font: inherit; }
+    button { cursor: pointer; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    .wrap { width: min(1180px, calc(100% - 64px)); margin: auto; }
+    .mast {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      padding: 19px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .brand { font: 600 1.4rem Fraunces, Georgia, serif; color: var(--text); text-decoration: none; }
+    .mast nav { display: flex; gap: 24px; font-size: .86rem; }
+    .hero { padding: 63px 0 35px; }
+    h1, h2, h3 { text-wrap: balance; }
+    h1 {
+      max-width: 19ch;
+      margin: 0 0 20px;
+      font: 500 clamp(3rem, 6vw, 5.4rem)/1.02 Fraunces, Georgia, serif;
+      letter-spacing: -.035em;
+    }
+    h1 em { color: var(--coral); font-style: normal; }
+    .lead { max-width: 70ch; margin: 0; color: var(--muted); font-size: 1.13rem; }
+    .architecture { border: 1px solid var(--border); border-radius: 9px; background: var(--surface); overflow: hidden; }
+    .drawing { max-width: 100%; overflow-x: auto; scrollbar-color: #597a70 var(--surface); }
+    .drawing svg { display: block; width: 100%; min-width: 800px; height: auto; }
+    .drawing .node rect { transition: fill .2s, stroke .2s; }
+    .drawing .node.active rect { fill: #1d4039; stroke: var(--teal); stroke-width: 3; }
+    .drawing .node.gate.active rect { fill: #49312f; stroke: var(--coral); }
+    .drawing .node.held rect { stroke-dasharray: 5 4; opacity: .55; }
+    .drawing #artifact { pointer-events: none; }
+    .diagram-note { margin: 0; padding: 0 20px 15px; color: var(--muted); font-size: .78rem; }
+    .scroll-cue { padding: 0 20px 15px; color: var(--muted); font-size: .78rem; }
+    .scroll-cue progress { display: block; width: min(240px, 100%); height: 6px; margin-top: 6px; accent-color: var(--teal); }
+    .walkthrough { border-top: 1px solid var(--border); padding: 22px; }
+    .stage-list { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 19px; }
+    button, select {
+      border: 1px solid #6e7d8a;
+      border-radius: 5px;
+      background: #21262d;
+      color: var(--text);
+      padding: 8px 12px;
+    }
+    button:hover:not(:disabled), select:hover { border-color: var(--teal); }
+    .stage-list button { padding: 5px 9px; font-size: .8rem; }
+    .stage-list button[aria-pressed=true] { color: var(--page); background: var(--teal); border-color: var(--teal); }
+    .step-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 30px; }
+    .step-layout h2 { margin: 0 0 7px; font: 500 1.6rem Fraunces, Georgia, serif; }
+    .step-layout p { margin: 0; color: var(--muted); }
+    .example {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      margin: 0;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      background: var(--page);
+      color: #d4e5dd;
+      font: .8rem/1.55 ui-monospace, SFMono-Regular, monospace;
+    }
+    .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 20px; }
+    .controls output { color: var(--muted); font-size: .84rem; margin-right: auto; }
+    .decision { margin-top: 15px; }
+    .decision label { margin-right: 8px; color: var(--coral); }
+    .note { color: var(--muted); font-size: .82rem; }
+    .section { padding: 88px 0; border-bottom: 1px solid var(--border); }
+    .section h2, .closing h2 {
+      max-width: 22ch;
+      margin: 0 0 20px;
+      font: 500 clamp(2.2rem, 4vw, 3.5rem)/1.08 Fraunces, Georgia, serif;
+      letter-spacing: -.025em;
+    }
+    .intro { max-width: 70ch; color: var(--muted); font-size: 1.1rem; }
+    .principles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 38px; margin-top: 42px; }
+    .principles article { border-top: 1px solid var(--teal); padding-top: 18px; }
+    .principles h3, .study h3 { margin: 0 0 10px; font: 500 1.45rem Fraunces, Georgia, serif; }
+    .principles p, .study p { color: var(--muted); margin: 0; }
+    .evidence-layout, .source-layout { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 70px; }
+    .studies { border-top: 1px solid var(--border); }
+    .study { padding: 24px 0; border-bottom: 1px solid var(--border); }
+    .study a { display: inline-block; margin-top: 9px; font-size: .9rem; }
+    pre.code {
+      overflow-x: auto;
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      color: #d4e5dd;
+      font: .8rem/1.7 ui-monospace, SFMono-Regular, monospace;
+    }
+    code { font-family: ui-monospace, SFMono-Regular, monospace; }
+    .links { display: flex; flex-wrap: wrap; gap: 12px 22px; font-size: .9rem; }
+    .closing { padding: 85px 0; }
+    .closing p { max-width: 70ch; color: var(--muted); }
+    footer { display: flex; justify-content: space-between; gap: 20px; border-top: 1px solid var(--border); padding: 24px 0 40px; font-size: .8rem; color: var(--muted); }
+    noscript { color: var(--muted); }
+    @media (max-width: 750px) {
+      .wrap { width: calc(100% - 32px); }
+      .mast { align-items: flex-start; }
+      .mast nav { gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
+      .hero { padding: 48px 0 28px; }
+      .hero h1 { max-width: 14ch; }
+      .step-layout, .evidence-layout, .source-layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+      .principles { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+      .section { padding: 65px 0; }
+      .walkthrough { padding: 16px; }
+      footer { display: block; }
+      footer span { display: block; margin-top: 8px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .drawing .node rect { transition: none; }
+    }
+    @media print {
+      :root {
+        --page: #fff; --surface: #fff; --border: #777;
+        --text: #111; --muted: #333; --teal: #111; --coral: #111;
+      }
+      body { color: #111; background: white; }
+      a, .intro, .closing p, .principles p, .study p, .step-layout p { color: #111; }
+      .example, .source-layout pre { background: #f5f5f5; color: #111; }
+      .mast nav, .stage-list, .controls, .decision, .scroll-cue { display: none; }
+      .section, .closing { padding: 25px 0; }
+      .drawing svg { min-width: 0; }
+    }
+  </style>
 </head>
 <body>
-<header class="wrap mast"><a class="brand" href="#top">Palinode Loop</a><nav aria-label="Main navigation"><a href="#walkthrough">Walkthrough</a><a href="#evidence">Evidence</a><a href="#source">Source</a></nav></header>
-<main id="top">
-<section class="wrap hero" aria-labelledby="hero-title">
-<div class="hero-copy"><h1 id="hero-title">A mistake can become a <em>method.</em></h1><p class="lead">A feedback harness for AI agents. Turn recurring failures into evidence-backed, human-approved rules. Keep the evidence. Revise what stops working.</p><p class="hero-note">A portable reference for making guidance inspectable, with a person at the point where a candidate becomes a rule.</p></div>
-<div class="diagram-shell"><div class="diagram-drawing" tabindex="0" role="region" aria-label="Architecture diagram, scroll horizontally on small screens"><svg viewBox="0 0 960 600" role="img" aria-labelledby="diagram-title diagram-desc"><title id="diagram-title">The Palinode Loop</title><desc id="diagram-desc">Six stages connect observation to feedback. A human decision separates candidates from active rules. Holding a candidate keeps it out of the active rules.</desc><defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#21645b"/></marker></defs>
-<g fill="none" stroke="#21645b" stroke-width="2" marker-end="url(#arr)"><path d="M250 154L355 114"/><path d="M604 114L710 154"/><path d="M810 194V389"/><path d="M710 446L605 486"/><path d="M355 486L250 446"/><path d="M150 389V194"/></g>
-<g text-anchor="middle"><text x="480" y="279" font-family="Georgia,serif" font-size="29">Evidence is not authority.</text><text x="480" y="310" font-family="Arial,sans-serif" font-size="15">A person decides whether guidance is adopted.</text></g>
-<g class="node active" data-node="0"><rect x="45" y="113" width="210" height="80" rx="6"/><text x="150" y="159" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" font-weight="bold" data-label="0">1  Observe</text></g>
-<g class="node" data-node="1"><rect x="355" y="63" width="250" height="80" rx="6"/><text x="480" y="109" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" font-weight="bold" data-label="1">2  Admit</text></g>
-<g class="node" data-node="2"><rect x="705" y="113" width="210" height="80" rx="6"/><text x="810" y="159" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" font-weight="bold" data-label="2">3  Candidate</text></g>
-<g class="node gate" data-node="3"><rect x="705" y="389" width="210" height="105" rx="6"/><text x="810" y="437" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" font-weight="bold" data-label="3">4  Human decides</text><text class="rust" x="810" y="466" text-anchor="middle" font-family="Arial,sans-serif" font-size="14">APPROVAL BOUNDARY</text></g>
-<g class="node" data-node="4"><rect x="355" y="457" width="250" height="80" rx="6"/><text x="480" y="503" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" font-weight="bold" data-label="4">5  Active rule</text></g>
-<g class="node" data-node="5"><rect x="45" y="407" width="210" height="80" rx="6"/><text x="150" y="453" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" font-weight="bold" data-label="5">6  Feedback</text></g>
-<path d="M810 494V529" fill="none" stroke="#a03e23" stroke-width="2" stroke-dasharray="5 4"/><circle cx="810" cy="529" r="4" fill="#a03e23"/><text class="rust" x="810" y="550" text-anchor="middle" font-family="Arial,sans-serif" font-size="14">Held candidate · no active rule</text><text x="480" y="567" text-anchor="middle" font-family="Arial,sans-serif" font-size="14">People record and revise entries; the checker validates and renders them.</text></svg></div>
-<div class="diagram-key"><span>Six stages · one human gate · scroll diagram on small screens</span><button id="mapping" type="button" aria-pressed="false" disabled>Show code mapping</button></div><div class="diagram-controls" aria-label="Diagram walkthrough"><output id="diagram-current" aria-live="polite">Stage 1 of 6 · Observe</output><button type="button" id="diagram-back" disabled>Back</button><button type="button" id="diagram-next" disabled>Next</button></div></div>
-</section>
-<section id="walkthrough" class="tour" aria-labelledby="tour-title"><div class="wrap tour-grid"><div class="tour-intro"><h2 id="tour-title">Follow one mistake.</h2><p>A synthetic example: a build is reported ready after a test command failed. Follow the evidence through a decision. This is an illustration, not a recorded outcome.</p><p class="caption">Use the stage buttons or left and right arrow keys within the tour. Playback starts only when requested.</p><noscript><p class="nojs">The interactive tour needs JavaScript. The <a href="architecture.svg">static architecture diagram</a> remains available.</p></noscript></div>
-<div id="tour-panel"><div class="steps" role="group" aria-label="Walkthrough stages"><button type="button" data-step="0" aria-pressed="true" disabled>1 &nbsp; Observe</button><button type="button" data-step="1" aria-pressed="false" disabled>2 &nbsp; Admit</button><button type="button" data-step="2" aria-pressed="false" disabled>3 &nbsp; Candidate</button><button type="button" data-step="3" aria-pressed="false" disabled>4 &nbsp; Decide</button><button type="button" data-step="4" aria-pressed="false" disabled>5 &nbsp; Active rule</button><button type="button" data-step="5" aria-pressed="false" disabled>6 &nbsp; Feedback</button></div>
-<div class="tour-detail" aria-live="polite" aria-atomic="true"><h3 id="detail-title">Observe the failure</h3><p id="detail-text">A test command fails, but a fictional build report says it is ready. A person records the incident and a source excerpt.</p><pre><code id="detail-example">Excerpt: “The test command failed; the build was reported ready.”</code></pre></div>
-<div class="decision" role="group" aria-label="Simulated human decision"><span>Simulated decision:</span><button type="button" data-decision="approve" aria-pressed="true" disabled>Approve</button><button type="button" data-decision="hold" aria-pressed="false" disabled>Hold candidate</button></div>
-<div class="controls"><button type="button" id="back" disabled>Back</button><button type="button" id="next" disabled>Next</button><button type="button" id="play" aria-pressed="false" disabled>Play</button></div><p class="caption">The decision here changes only this illustration. The CLI never changes ledger states.</p></div></div></section>
-<section class="wrap section" id="design"><div class="section-head"><h2>A rule needs a route back to its evidence.</h2><p>A harness is the workflow, checks and instructions around an agent. A lessons file can tell an agent what to do; a governance process also records why a rule exists, who approved it and when it needs another look.</p></div><div class="principles"><article><h3>Keep the candidate separate</h3><p>Evidence and proposed actions are material for review. A candidate is not an instruction, and retrieval alone does not grant it authority.</p></article><article><h3>Put a person at the gate</h3><p>Activation requires recorded approval. The checker checks the recorded approval before an active rule can be rendered.</p></article><article><h3>Revisit the rule</h3><p>Recorded violations can prompt a person to sharpen, enforce or retire guidance. The program flags a pattern; it does not choose the remedy.</p></article></div></section>
-<section class="wrap section evidence-layout" id="evidence"><div><h2>Why experience can improve the next attempt.</h2><p>Three studies show how agents can use feedback and stored experience. They examine different systems; none evaluates Palinode Loop or its human approval gate.</p><a href="evidence.md">Read the evidence and limits</a></div><div class="studies"><article class="study"><h3>Learning from execution</h3><p>On AppWorld, offline ACE without ground-truth labels scored 57.2 versus 42.4 for ReAct alone: a 14.8 percentage point difference averaged across four completion metrics. The base model was DeepSeek-V3.1-671B; ACE used an automatic generator, reflector and curator.</p><a href="https://arxiv.org/html/2510.04618v3#S4.SS3">ACE · Table 1</a></article><article class="study"><h3>Retrieving experience</h3><p>In LongMemEval-V2, AgentRunbook-C scored 74.9% versus 69.9% for Codex on the small tier, and 70.1% versus 68.7% on medium. The benchmark tests retrieved experience in specialised web environments.</p><a href="https://arxiv.org/html/2605.12493v1#S5.SS1">LongMemEval-V2 · Table 2</a></article><article class="study"><h3>Retaining prior events</h3><p>In DreamBench-SWE’s preregistered successor audit, no external memory passed 21/180 cases; deterministic event memory passed 82/180. Conditions covered 60 traps with three seeds. This does not establish superiority among memory-bearing methods.</p><a href="https://arxiv.org/html/2608.20664v1#S6.SS6">DreamBench-SWE · Table 12</a></article></div></section>
-<section class="wrap section code-layout" id="source"><div><h2>Small enough to inspect.</h2><p>The standard-library CLI reads a supplied ledger. It checks structure and prints active rules for review.</p><p>An excerpt match is a string check; approval is a recorded attestation, not an authenticated identity. The checker does not establish source truth or semantic support, automatically activate rules, change model weights, or enforce guidance in a host.</p></div><div><pre><code>python3 loop.py check examples/ledger.json
+  <header class="wrap mast">
+    <a class="brand" href="#top">Palinode Loop</a>
+    <nav aria-label="Main navigation"><a href="#architecture">Architecture</a><a href="#evidence">Evidence</a><a href="#source">Source</a></nav>
+  </header>
+  <main id="top">
+    <section class="wrap hero">
+      <h1>A mistake can become a <em>method.</em></h1>
+      <p class="lead">A feedback harness for AI agents. Turn recurring failures into evidence-backed, human-approved rules. Keep the evidence. Revise what stops working.</p>
+    </section>
+    <section class="wrap" id="architecture" aria-label="Interactive architecture walkthrough">
+      <div class="architecture">
+        <div class="drawing" tabindex="0" role="region" aria-label="Architecture diagram; scroll horizontally on small screens">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 342" role="img" aria-labelledby="title desc">
+  <title id="title">Palinode Loop architecture</title>
+  <desc id="desc">Six stages: incident, admission, candidate, human decision, bounded active rule, and violation feedback. A hold branch ends outside active guidance. People record decisions; the checker validates and renders them.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#7ee7c1"/></marker>
+  </defs>
+  <rect width="900" height="342" rx="10" fill="#161b22"/>
+  <g fill="none" stroke="#7ee7c1" stroke-width="2" marker-end="url(#arrow)">
+    <path id="path-1" d="M270 65H326"/><path id="path-2" d="M572 65H628"/>
+    <path id="path-3" d="M751 105V179"/><path id="path-4" d="M628 220H572"/>
+    <path id="path-5" d="M326 220H270"/><path id="path-return" d="M147 179V105"/>
+  </g>
+  <g fill="none" stroke="#ffa28b" stroke-width="2" stroke-dasharray="5 4"><path id="path-hold" d="M751 260V300"/><circle cx="751" cy="300" r="3" fill="#ffa28b"/></g>
+  <g font-family="system-ui, -apple-system, sans-serif" fill="#e6edf3">
+    <g class="node" data-node="0"><rect x="24" y="24" width="246" height="81" rx="7" fill="#21262d" stroke="#6e7d8a"/><text x="42" y="54" font-size="18" font-weight="700">1  Observe incident</text><text x="42" y="82" font-family="monospace" font-size="13" fill="#b8c5ce">evidence()</text></g>
+    <g class="node" data-node="1"><rect x="326" y="24" width="246" height="81" rx="7" fill="#21262d" stroke="#6e7d8a"/><text x="344" y="54" font-size="18" font-weight="700">2  Admit evidence</text><text x="344" y="82" font-family="monospace" font-size="13" fill="#b8c5ce">validate()</text></g>
+    <g class="node" data-node="2"><rect x="628" y="24" width="246" height="81" rx="7" fill="#21262d" stroke="#6e7d8a"/><text x="646" y="54" font-size="18" font-weight="700">3  Retain candidate</text><text x="646" y="82" font-family="monospace" font-size="13" fill="#b8c5ce">state: candidate</text></g>
+    <g class="node gate" data-node="3"><rect x="628" y="179" width="246" height="81" rx="7" fill="#2b2427" stroke="#ffa28b" stroke-width="2"/><text x="646" y="207" font-size="18" font-weight="700">4  Human decides</text><text x="646" y="234" font-family="monospace" font-size="13" fill="#ffd0c3">approval.decision</text></g>
+    <g class="node" data-node="4"><rect x="326" y="179" width="246" height="81" rx="7" fill="#21262d" stroke="#6e7d8a"/><text x="344" y="207" font-size="18" font-weight="700">5  Bounded active rule</text><text x="344" y="234" font-family="monospace" font-size="13" fill="#b8c5ce">main(): render</text></g>
+    <g class="node" data-node="5"><rect x="24" y="179" width="246" height="81" rx="7" fill="#21262d" stroke="#6e7d8a"/><text x="42" y="207" font-size="18" font-weight="700">6  Violation feedback</text><text x="42" y="234" font-family="monospace" font-size="13" fill="#b8c5ce">violations[]</text></g>
+    <text x="751" y="323" text-anchor="middle" font-size="14" fill="#ffa28b">Held candidate · no active rule</text>
+    <text x="42" y="310" font-size="13" fill="#b8c5ce">Evidence stays inspectable.</text><text x="42" y="329" font-size="13" fill="#b8c5ce">Approved rules stay revisable.</text>
+  </g>
+  <g id="artifact" aria-hidden="true" transform="translate(147,142)">
+    <title id="artifact-label">evidence</title>
+    <path d="M-16 -18H6L16 -8V18H-16Z" fill="#7ee7c1" stroke="#0d1117" stroke-width="2"/>
+    <path d="M6 -18V-8H16 M-9 1H9 M-9 8H9" fill="none" stroke="#0d1117" stroke-width="2"/>
+  </g>
+</svg>
+
+        </div>
+        <p class="diagram-note">Trace the six stages. Scroll to inspect the approval gate and active rule. The moving record is a synthetic illustration.</p>
+        <div class="scroll-cue" id="scroll-cue" hidden>
+          <span id="scroll-position">Diagram position: start</span>
+          <progress id="scroll-progress" max="100" value="0" aria-label="Diagram horizontal scroll position"></progress>
+        </div>
+        <div class="walkthrough" id="tour">
+          <div class="stage-list" role="group" aria-label="Choose a stage">
+            <button data-step="0" aria-pressed="true" disabled>1 Observe</button>
+            <button data-step="1" aria-pressed="false" disabled>2 Admit</button>
+            <button data-step="2" aria-pressed="false" disabled>3 Candidate</button>
+            <button data-step="3" aria-pressed="false" disabled>4 Decide</button>
+            <button data-step="4" aria-pressed="false" disabled>5 Active</button>
+            <button data-step="5" aria-pressed="false" disabled>6 Feedback</button>
+          </div>
+          <div class="step-layout">
+            <div aria-live="polite" aria-atomic="true">
+              <h2 id="step-title">Observe an incident</h2>
+              <p id="step-text">A fictional build is declared ready after its test command failed. A person records the incident and an excerpt.</p>
+            </div>
+            <pre class="example"><code id="step-example">Evidence: “The test command failed; the build was reported ready.”</code></pre>
+          </div>
+          <div class="decision" id="decision-panel" hidden>
+            <label for="decision">Simulated human decision</label>
+            <select id="decision"><option value="approve">Approve</option><option value="hold">Hold candidate</option></select>
+          </div>
+          <div class="controls">
+            <output id="status" aria-live="polite">Stage 1 of 6 · Observe</output>
+            <button id="play" aria-pressed="false" disabled>Play</button>
+            <button id="next" disabled>Next stage</button>
+          </div>
+          <p class="note">The illustration changes no ledger. A person records each decision; the checker does not promote candidates.</p>
+          <noscript>The overview above remains available without JavaScript. <a href="architecture.svg">Open the static diagram.</a></noscript>
+        </div>
+      </div>
+    </section>
+    <section class="wrap section">
+      <h2>The architectural contribution.</h2>
+      <p class="intro">A harness is the workflow, checks and instructions around an agent. This design gives evidence and active rules separate lifecycles, joining them through explicit approval and recorded failures. Evidence stays available when an intervention needs revision.</p>
+      <div class="principles">
+        <article><h3>Plain rules</h3><p>An instruction file tells an agent what to do. The loop also keeps the evidence, scope and decision available for later review.</p></article>
+        <article><h3>Retrieval and authority</h3><p>Retrieval can surface a past event. A candidate is not active guidance until a person makes and records the policy decision.</p></article>
+        <article><h3>Reflection and correction</h3><p>Automatic reflection can suggest an action. Here, later recorded violations can prompt a person to sharpen, enforce or retire it.</p></article>
+      </div>
+    </section>
+    <section class="wrap section evidence-layout" id="evidence">
+      <div><h2>Why experience can improve the next attempt.</h2><p class="intro">These studies examine related mechanisms in different systems. They do not evaluate this complete workflow or its human gate.</p><a href="evidence.md">Read evidence and limits</a></div>
+      <div class="studies">
+        <article class="study"><h3>Refining context from feedback</h3><p>On AppWorld, offline ACE without ground-truth labels scored 57.2 versus 42.4 for ReAct alone: 14.8 percentage points averaged across four completion metrics. The base model was DeepSeek-V3.1-671B; ACE used an automatic generator, reflector and curator.</p><a href="https://arxiv.org/html/2510.04618v3#S4.SS3">ACE · Table 1</a></article>
+        <article class="study"><h3>Retrieving experience</h3><p>In LongMemEval-V2, AgentRunbook-C scored 74.9% versus 69.9% for Codex on the small tier, and 70.1% versus 68.7% on medium. The benchmark tests retrieved experience in specialised web environments.</p><a href="https://arxiv.org/html/2605.12493v1#S5.SS1">LongMemEval-V2 · Table 2</a></article>
+        <article class="study"><h3>Retaining prior events</h3><p>In DreamBench-SWE’s preregistered successor audit, no external memory passed 21/180 cases; deterministic event memory passed 82/180. Conditions covered 60 traps with three seeds. This does not establish superiority among memory-bearing methods.</p><a href="https://arxiv.org/html/2608.20664v1#S6.SS6">DreamBench-SWE · Table 12</a></article>
+      </div>
+    </section>
+    <section class="wrap section source-layout" id="source">
+      <div><h2>Small enough to inspect.</h2><p class="intro">The standard-library CLI reads a supplied ledger. <code>load()</code> bounds and parses the input; <code>validate()</code> checks each entry; <code>main()</code> checks or renders active rules.</p><p class="note">An excerpt match is a string check; approval is an attestation, not an authenticated identity. The checker does not establish source truth or semantic support, automatically activate rules, change model weights or enforce guidance in a host.</p></div>
+      <div>
+        <pre class="code"><code>{
+  "schema_version": 1,
+  "entries": [{
+    "id": "C1", "state": "candidate",
+    "trigger": "a test fails",
+    "action": "check the failure", "scope": "builds",
+    "evidence": [],
+    "admission": {
+      "own_mistake": true, "recurring": true,
+      "preventable": true, "covered_by_rule": false
+    }
+  }]
+}</code></pre>
+        <p class="note">Candidate shape; add evidence to make it eligible. See the synthetic ledger for a complete example.</p>
+        <pre class="code"><code>python3 loop.py check examples/ledger.json
 python3 loop.py render examples/ledger.json
-python3 -m unittest discover -s tests -v</code></pre><div class="links"><a href="../loop.py">Checker source</a><a href="../examples/ledger.json">Synthetic ledger</a><a href="../tests/test_loop.py">Tests</a><a href="../ARCHITECTURE.md">Architecture</a><a href="architecture.svg">Download SVG</a><a href="../SECURITY.md">Security</a></div></div></section>
-<section class="wrap closing"><h2>Designed to be revised.</h2><p>A <a href="https://www.etymonline.com/word/palinode">palinode</a> is a poem that revises an earlier position. Here the name is a reminder that rules, too, are provisional. Corrigibility means keeping the decision open to correction: preserve the evidence, inspect the result, and let a person change course.</p></section>
-</main><footer class="wrap footer"><strong>Palinode Loop</strong><span>v0.1.0 reference implementation · Synthetic walkthrough · <a href="assets/OFL.txt">Font licence</a></span></footer>
-<script>
-(()=>{const names=['1  Observe','2  Admit','3  Candidate','4  Human decides','5  Active rule','6  Feedback'];const codes=['evidence()','validate()','state: candidate','approval.decision','main(): render','violations[]'];const titles=['Observe the failure','Apply the admission test','Keep a candidate','A person decides','Use only approved guidance','Inspect later feedback'];const common=['A test command fails, but a fictional build report says it is ready. A person records the incident and a source excerpt.','The person considers whether this was a recurring, preventable process mistake already covered by a rule. The checker validates the recorded answers.','The proposed action and its evidence remain a candidate. One session can make it eligible for consideration; an active rule requires two distinct sessions.','Choose a simulated decision below. Approval is a recorded human decision, not an action performed by the checker.'];const snippets=['Excerpt: “The test command failed; the build was reported ready.”','Admission: recurring and preventable process mistake; not already covered.','Candidate: require a passing test before declaring release readiness.','Approval record: decision, reviewer label and date.','Rule: When declaring a build ready, require the test command to pass. [Scope: release readiness]','Violations: two distinct recorded sessions → review recommended.'];const endings={approve:['With two sessions and a recorded approval, an active entry can pass the checks. Render prints its conditional rule and scope for a person to review.','If two distinct violation sessions are recorded, check recommends review. A person can revise, enforce or retire the rule.'],hold:['The candidate stays out of rendered active guidance. The checker does not promote it.','No active rule exists in this branch. A person may gather more evidence or reconsider the candidate later.']};const steps=[...document.querySelectorAll('[data-step]')],nodes=[...document.querySelectorAll('[data-node]')],choices=[...document.querySelectorAll('[data-decision]')];const back=document.querySelector('#back'),next=document.querySelector('#next'),play=document.querySelector('#play'),mapping=document.querySelector('#mapping'),diagramBack=document.querySelector('#diagram-back'),diagramNext=document.querySelector('#diagram-next');let index=0,decision='approve',timer=null,code=false;function stop(){if(timer!==null)clearInterval(timer);timer=null;play.textContent='Play';play.setAttribute('aria-pressed','false')}function show(){steps.forEach((b,i)=>b.setAttribute('aria-pressed',String(i===index)));nodes.forEach((n,i)=>{n.classList.toggle('active',i===index);n.classList.toggle('held',decision==='hold'&&i===4)});choices.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.decision===decision)));document.querySelector('#detail-title').textContent=index===4&&decision==='hold'?'Candidate held':titles[index];document.querySelector('#detail-text').textContent=index<4?common[index]:endings[decision][index-4];document.querySelector('#detail-example').textContent=decision==='hold'&&index>=4?(index===4?'Rendered active rule: none.':'Held candidate remains available for human review.'):snippets[index];document.querySelector('#diagram-current').textContent='Stage '+(index+1)+' of 6 · '+names[index].slice(3);back.disabled=diagramBack.disabled=index===0;next.disabled=diagramNext.disabled=index===5;if(index===5)stop()}steps.forEach(b=>{b.disabled=false;b.addEventListener('click',()=>{stop();index=Number(b.dataset.step);show()})});choices.forEach(b=>{b.disabled=false;b.addEventListener('click',()=>{decision=b.dataset.decision;show()})});back.addEventListener('click',()=>{stop();index=Math.max(0,index-1);show()});next.addEventListener('click',()=>{stop();index=Math.min(5,index+1);show()});diagramBack.addEventListener('click',()=>{stop();index=Math.max(0,index-1);show()});diagramNext.addEventListener('click',()=>{stop();index=Math.min(5,index+1);show()});play.disabled=false;play.addEventListener('click',()=>{if(timer!==null){stop();return}if(index===5)index=0;show();play.textContent='Pause';play.setAttribute('aria-pressed','true');timer=setInterval(()=>{index=Math.min(5,index+1);show()},3500)});mapping.disabled=false;mapping.addEventListener('click',()=>{code=!code;document.querySelectorAll('[data-label]').forEach((node,i)=>node.textContent=code?codes[i]:names[i]);mapping.textContent=code?'Show stage labels':'Show code mapping';mapping.setAttribute('aria-pressed',String(code))});document.querySelector('#tour-panel').addEventListener('keydown',event=>{if(event.key==='ArrowRight'||event.key==='ArrowLeft'){event.preventDefault();stop();index=Math.max(0,Math.min(5,index+(event.key==='ArrowRight'?1:-1)));show();steps[index].focus()}});document.addEventListener('visibilitychange',()=>{if(document.hidden)stop()});show()})();
-</script>
-</body></html>
+python3 -m unittest discover -s tests -v</code></pre>
+        <div class="links"><a href="../loop.py">Checker source</a><a href="../examples/ledger.json">Synthetic ledger</a><a href="../tests/test_loop.py">Tests</a><a href="../ARCHITECTURE.md">Architecture</a><a href="architecture.svg">Static SVG</a><a href="../SECURITY.md">Security</a></div>
+      </div>
+    </section>
+    <section class="wrap closing"><h2>Designed to be revised.</h2><p>A <a href="https://www.etymonline.com/word/palinode">palinode</a> is a poem that revises an earlier position. Here the name is a reminder that rules, too, are provisional. Corrigibility means keeping the decision open to correction: preserve the evidence, inspect the result, and let a person change course.</p></section>
+  </main>
+  <footer class="wrap"><strong>Palinode Loop</strong><span>v0.1.0 reference implementation · Synthetic walkthrough · <a href="assets/OFL.txt">Font licence</a></span></footer>
+  <script>
+    (() => {
+      const stages = [
+        {
+          name: 'Observe', title: 'Observe an incident', kind: 'evidence',
+          text: 'A fictional build is declared ready after its test command failed. A person records the incident and an excerpt.',
+          example: 'Evidence: “The test command failed; the build was reported ready.”'
+        },
+        {
+          name: 'Admit', title: 'Apply the admission test', kind: 'evidence',
+          text: 'A person records whether the mistake could recur, was preventable and is already covered. The checker validates the supplied answers.',
+          example: 'Admission: own mistake, recurring, preventable; not already covered.'
+        },
+        {
+          name: 'Candidate', title: 'Retain a candidate', kind: 'candidate',
+          text: 'The proposed action remains evidence for review. An active rule requires at least two distinct evidence sessions.',
+          example: 'Candidate: require a passing test before declaring release readiness.'
+        },
+        {
+          name: 'Decide', title: 'A person makes the decision', kind: 'candidate',
+          text: 'Choose an illustrative decision. A recorded approval is required before an active entry can pass validation.',
+          example: 'Approval: decision, reviewer label and date.'
+        },
+        {
+          name: 'Active', title: 'Review bounded guidance', kind: 'rule',
+          text: 'With the required evidence and recorded approval, an active entry can pass the checks. Render prints the rule and scope for review.',
+          example: 'When declaring a build ready, require the test command to pass. [Scope: release readiness]'
+        },
+        {
+          name: 'Feedback', title: 'Review later violations', kind: 'rule',
+          text: 'Two recorded violation sessions prompt a review recommendation. A person decides whether to revise, enforce or retire the rule.',
+          example: 'violations: two distinct recorded sessions → review recommended.'
+        }
+      ];
+      const buttons = [...document.querySelectorAll('[data-step]')];
+      const nodes = [...document.querySelectorAll('[data-node]')];
+      const play = document.querySelector('#play');
+      const next = document.querySelector('#next');
+      const decision = document.querySelector('#decision');
+      const panel = document.querySelector('#decision-panel');
+      const status = document.querySelector('#status');
+      const artifact = document.querySelector('#artifact');
+      const artifactLabel = document.querySelector('#artifact-label');
+      const drawing = document.querySelector('.drawing');
+      const scrollCue = document.querySelector('#scroll-cue');
+      const scrollPosition = document.querySelector('#scroll-position');
+      const scrollProgress = document.querySelector('#scroll-progress');
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      let index = 0;
+      let playback = null;
+      let frame = null;
+
+      function cancelMotion() {
+        if (frame !== null) cancelAnimationFrame(frame);
+        frame = null;
+      }
+
+      function pause() {
+        if (playback !== null) clearTimeout(playback);
+        playback = null;
+        cancelMotion();
+        play.textContent = 'Play';
+        play.setAttribute('aria-pressed', 'false');
+      }
+
+      function placeArtifact(path, progress) {
+        if (!path || typeof path.getTotalLength !== 'function') return;
+        const length = path.getTotalLength();
+        const inset = Math.min(18, length / 2);
+        const point = path.getPointAtLength(inset + (length - 2 * inset) * progress);
+        artifact.setAttribute('transform', `translate(${point.x},${point.y})`);
+      }
+
+      function updateScrollCue() {
+        const range = drawing.scrollWidth - drawing.clientWidth;
+        scrollCue.hidden = range <= 1;
+        const position = range > 0 ? Math.max(0, Math.min(1, drawing.scrollLeft / range)) : 0;
+        scrollProgress.value = position * 100;
+        scrollPosition.textContent = `Diagram position: ${position < .05 ? 'start' : position > .95 ? 'end' : 'middle'}`;
+      }
+
+      function moveArtifact(previous) {
+        cancelMotion();
+        const held = decision.value === 'hold';
+        const pathId = held && index >= 4 ? 'path-hold' : `path-${index}`;
+        const path = document.getElementById(pathId);
+        if (!path) {
+          artifact.setAttribute('transform', 'translate(147,142)');
+          return;
+        }
+        if (reducedMotion.matches || previous !== index - 1 || (held && index === 5)) {
+          placeArtifact(path, 1);
+          return;
+        }
+        const start = performance.now();
+        function animate(now) {
+          const progress = Math.min(1, (now - start) / 700);
+          placeArtifact(path, 1 - Math.pow(1 - progress, 3));
+          if (progress < 1) frame = requestAnimationFrame(animate);
+          else frame = null;
+        }
+        frame = requestAnimationFrame(animate);
+      }
+
+      function show(previous) {
+        const held = decision.value === 'hold';
+        const stage = stages[index];
+        buttons.forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
+        nodes.forEach((node, i) => {
+          node.classList.toggle('active', i === index && !(held && index >= 4));
+          node.classList.toggle('held', held && i === 4);
+        });
+        panel.hidden = index !== 3;
+        document.querySelector('#step-title').textContent = held && index === 4 ? 'Candidate held' : stage.title;
+        document.querySelector('#step-text').textContent = held && index >= 4
+          ? (index === 4 ? 'The candidate stays out of rendered active guidance. A person can gather more evidence.' : 'No active rule exists on this branch; the candidate remains available for human review.')
+          : stage.text;
+        document.querySelector('#step-example').textContent = held && index >= 4
+          ? (index === 4 ? 'Rendered active rule: none.' : 'Held candidate → human review.')
+          : stage.example;
+        artifactLabel.textContent = held && index >= 4 ? 'held' : stage.kind;
+        status.textContent = `Stage ${index + 1} of 6 · ${stage.name}`;
+        next.disabled = index === stages.length - 1;
+        moveArtifact(previous);
+        if (index === stages.length - 1 && playback !== null) {
+          clearTimeout(playback);
+          playback = null;
+          play.textContent = 'Play';
+          play.setAttribute('aria-pressed', 'false');
+        }
+      }
+
+      function advance() {
+        const previous = index;
+        index = Math.min(stages.length - 1, index + 1);
+        show(previous);
+      }
+
+      function schedule() {
+        playback = setTimeout(() => {
+          advance();
+          if (index < stages.length - 1 && playback !== null) schedule();
+        }, 2600);
+      }
+
+      buttons.forEach((button, i) => {
+        button.disabled = false;
+        button.addEventListener('click', () => {
+          pause();
+          const previous = index;
+          index = i;
+          show(previous);
+        });
+      });
+      next.addEventListener('click', () => { pause(); advance(); });
+      play.disabled = false;
+      play.addEventListener('click', () => {
+        if (playback !== null) { pause(); return; }
+        if (index === stages.length - 1) { index = 0; show(-1); }
+        play.textContent = 'Pause';
+        play.setAttribute('aria-pressed', 'true');
+        schedule();
+      });
+      decision.addEventListener('change', () => { pause(); show(index); });
+      document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
+      drawing.addEventListener('scroll', updateScrollCue, { passive: true });
+      window.addEventListener('resize', updateScrollCue);
+      reducedMotion.addEventListener('change', () => { cancelMotion(); show(index); });
+      updateScrollCue();
+      show(-1);
+    })();
+  </script>
+</body>
+</html>

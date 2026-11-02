@@ -1,42 +1,64 @@
 # Architecture
 
-Palinode Loop separates **evidence**, **policy decisions**, and **use**. The reference implementation checks a caller-supplied JSON ledger and renders rules that are already marked active and carry an approval attestation.
+Palinode Loop separates **evidence**, **policy**, and **execution**. A person records and evaluates a candidate, approves or rejects it, and edits the ledger. The CLI checks that file and renders active rules; it does not manage lifecycle transitions or enforce guidance in an agent host.
 
-```text
-observed example ──> candidate with evidence ──> human decision
-                                                   │
-                                                   v
-ledger.json ──> check ──> active approved rule ──> render for review
-     ^                                                │
-     └──────── later violation evidence ──────────────┘
+```mermaid
+flowchart LR
+  E[Evidence record] --> C[Candidate]
+  C --> H{Human decision}
+  H -->|approve and active policy passes| A[Active rule]
+  H -->|hold or reject| N[No active rule]
+  A --> V[Later violation evidence]
+  V --> R[Review recommended]
+  R --> H
+  L[(ledger.json)] --> X[loop.py check]
+  X -->|valid active entries| O[loop.py render]
+  O --> I[Human inspects output]
 ```
 
-This is a governed workflow, not an automated state machine. A person documents evidence, evaluates the candidate, records approval or rejection, and updates the ledger. `loop.py` does not capture sessions, create candidates, change entry states, or enforce rules in an agent host.
+The diagram describes intended human practice and CLI data flow. A human edits `ledger.json` between decisions; no arrow is an automatic state transition. See the synthetic [`examples/ledger.json`](examples/ledger.json).
 
-## Ledger lifecycle
+## Schema and policy
 
-The version 1 ledger has a `schema_version` and an `entries` array. Entries use one of four states: `candidate`, `active`, `dormant`, or `rejected`. Each entry includes an `id`, `trigger`, `action`, `scope`, evidence, admission answers, and optionally approval and violation records. [`examples/ledger.json`](examples/ledger.json) contains a fabricated active rule and candidate.
+The top-level object requires `schema_version: 1` and an `entries` array. Each entry requires:
 
-An entry is eligible when it has at least one distinct evidence session, records the mistake as the operator's own, recurring, and preventable, and says no existing rule covered it. Eligibility is not approval. To be active, the entry must also have evidence from at least two distinct sessions, an approval record with decision `approve`, and a generated rule no longer than 30 words. The two-session minimum and word cap are policy heuristics, not research-derived thresholds. Approval records an attestation; it does not authenticate a person.
+| Field | Shape and purpose |
+|---|---|
+| `id` | Unique ASCII ID matching `[A-Za-z][A-Za-z0-9_-]{0,63}`. |
+| `state` | `candidate`, `active`, `dormant`, or `rejected`. |
+| `trigger`, `action`, `scope` | Single-line strings that form the conditional rule and bound where it applies. |
+| `evidence` | Array of records with `session`, ISO date, `source`, `quote`, and `excerpt`. At least one distinct session is required for eligibility; an empty array is valid for an ineligible candidate. The quote must occur in the supplied excerpt. |
+| `admission` | Boolean answers for `own_mistake`, `recurring`, `preventable`, and `covered_by_rule`. |
+| `approval` (optional) | `decision`, `by`, and date. `decision` must equal `approve` for an active entry. |
+| `violations` (optional) | Evidence records in the same format as `evidence`. |
 
-Later violations are kept as evidence records. `check` recommends review for an active rule when violations cover at least two distinct session labels. It does not decide whether to revise, retire, or retain the rule. Unrecorded violations remain invisible.
+An entry is eligible when it has evidence from at least one distinct session, all three positive admission answers, and `covered_by_rule: false`. An active entry must additionally have two distinct evidence sessions, an approval attestation, and a generated rule of no more than 30 words. The session minimum and word cap are fixed policy heuristics, not empirically selected thresholds. The ledger does not authenticate the approver.
 
-## Commands
+Two distinct violation-session labels on an active rule make `check` recommend review. It does not choose whether to revise, retain, or retire the rule. Unrecorded events cannot affect the result.
 
-From this directory, using Python 3.10 or newer:
+## Code path
 
-```sh
-python3 loop.py check examples/ledger.json
-python3 loop.py render examples/ledger.json
-```
+1. `load(path)` reads at most 1 MiB, decodes UTF-8, and parses JSON while rejecting duplicate object keys and non-finite constants.
+2. `validate(data)` checks the schema, allowed fields and states, unique safe IDs, scalar types, dates, admission, approval, and active-rule constraints.
+3. `evidence(items, path)` checks record fields and quote-substring presence, and returns distinct trimmed session labels. It does not inspect a source or interpret a quote.
+4. `main(argv)` implements `check` and `render`. `check` reports state and eligibility; for active entries with the violation threshold it adds a review recommendation. `render` prints only active rules as `When <trigger>, <action>. [Scope: <scope>]`.
 
-`check` validates the ledger and reports each entry's state and eligibility. `render` prints active rules as `When <trigger>, <action>. [Scope: <scope>]`. Review the output before copying selected rules into host instructions. Neither command changes the ledger, global instructions, or host settings.
+Input strings reject Unicode control, format, surrogate, and line/paragraph separator characters. Unknown fields fail closed. Errors return nonzero status; the CLI writes no files.
 
-The implementation uses only the Python standard library. It reads at most 1 MiB from the named input, rejects malformed UTF-8/JSON, duplicate JSON keys and entry IDs, unknown fields, invalid dates, unsupported states, unsafe IDs, and Unicode control/format characters in strings. It checks that each evidence quote occurs in its supplied excerpt. That string check does not establish source authenticity, quotation context, or semantic support.
+## Trust boundaries
+
+| The CLI checks | The CLI does not establish |
+|---|---|
+| Ledger shape, allowed values, distinct declared session labels, and quote presence in supplied excerpts. | That a source or session is genuine, that a quote supports a rule, or that all relevant events were recorded. |
+| An `approve` value exists for an active entry. | Approver identity, human review quality, or reviewer independence. Approval is an unsigned ledger attestation. |
+| A rule meets configured local policy. | That the rule is safe, wise, current, or effective. |
+
+The tool uses Python's standard library and makes no network or model calls. It does not capture conversations, create or promote candidates, change ledger states, modify host settings, or enforce rules. Review rendered rules before manually copying them into host instructions. The walkthrough also represents a decision; it never edits the ledger.
 
 ## Source map
 
-- [`loop.py`](loop.py): `validate` checks ledger structure and lifecycle requirements; `evidence` validates supplied evidence and returns distinct session labels; `load` parses bounded JSON input; `main` implements `check` and `render`.
-- [`tests/test_loop.py`](tests/test_loop.py): fabricated tests for admission, approval, identifiers, evidence, violations, and malformed input.
-- [`docs/evidence.md`](docs/evidence.md): cited studies and their limits; none tests Palinode Loop or establishes its effectiveness.
-- [`docs/index.html`](docs/index.html) and [`docs/architecture.svg`](docs/architecture.svg): interactive explanation and static diagram.
+- [`loop.py`](loop.py) — implementation of `load`, `validate`, `evidence`, and `main`.
+- [`tests/test_loop.py`](tests/test_loop.py) — offline tests using fabricated records.
+- [`docs/index.html`](docs/index.html) — interactive six-stage explanation and linked studies.
+- [`docs/architecture.svg`](docs/architecture.svg) — portable diagram.
+- [`docs/evidence.md`](docs/evidence.md) — published research comparisons and limits.
